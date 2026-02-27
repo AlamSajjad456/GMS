@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="description" content="A new web page" />
+<meta name="robots" content="index, follow" />
+<link rel="icon" href="favicon.ico" />
+<title>GoldCalc Pro - Jewelry Shop Management</title>
+
+<!-- styles -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+<link rel="stylesheet" href="style.css" />
+
+<!-- 3rd-party libs that app.js might use (load before app.js or use defer) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js" defer></script>
+
+<style>
+/* your reset + body styles here (or keep in style.css) */
+*, *::before, *::after {
+box-sizing: border-box;
+margin: 0;
+padding: 0;
+}
+body {
+font-family: system-ui, sans-serif;
+background: #fafbfc;
+color: #222;
+min-height: 100vh;
+line-height: 1.6;
+}
+</style>
+</head>
+<body>
+<div class="container">
+<!-- Desktop Sidebar Navigation -->
+<aside class="sidebar desktop-only">
+<div class="logo">
+<i class="fas fa-gem"></i>
+<div>
+<h2>GoldCalc Pro</h2>
+<p class="subtitle">
+Jewelry Management System
+</p>
+</div>
+</div>
+
+<nav class="nav-menu">
+<a href="#" class="nav-item active" data-tab="dashboard">
+<i class="fas fa-home"></i> Dashboard
+</a>
+<a href="#" class="nav-item" data-tab="calculator">
+<i class="fas fa-calculator"></i> Gold Calculator
+</a>
+<a href="#" class="nav-item" data-tab="invoices">
+<i class="fas fa-file-invoice"></i> Invoices
+<span class="badge" id="invoice-count">0</span>
+</a>
+<a href="#" class="nav-item" data-tab="customers">
+<i class="fas fa-users"></i> Customers
+</a>
+<a href="#" class="nav-item" data-tab="inventory">
+<i class="fas fa-boxes"></i> Inventory
+</a>
+<a href="#" class="nav-item" data-tab="reports">
+<i class="fas fa-chart-bar"></i> Reports
+</a>
+<a href="#" class="nav-item" data-tab="settings">
+<i class="fas fa-cog"></i> Settings
+</a>
+</nav>
+
+<div class="sidebar-footer">
+<div class="user-info">
+<div class="avatar">
+JS
+</div>
+<div>
+<p class="username">
+Jewelry Shop
+</p>
+<p class="role">
+Admin
+</p>
+</div>
+</div>
+</div>
+</aside>
+
+<!-- Mobile Sidebar (Drawer) -->
+<div class="mobile-sidebar-overlay" id="mobile-sidebar-overlay"></div>
+<aside class="mobile-sidebar" id="mobile-sidebar">
+<button class="mobile-sidebar-close" id="close-mobile-sidebar">
+<i class="fas fa-times"></i>
+</button>
+<div class="logo">
+<i class="fas fa-gem"></i>
+<div>
+<h2>GoldCalc Pro</h2>
+<p class="subtitle">
+Jewelry Management
+</p>
+</div>
+</div>
+
+<nav class="nav-menu">
+<a href="#" class="nav-item active" data-tab="dashboard">
+<i class="fas fa-home"></i> Dashboard
+</a>
+<a href="#" class="nav-item" data-tab="calculator">
+<i class="fas fa-calculator"></i> Gold Calculator
+</a>
+<a href="#" class="nav-item" data-tab="invoices">
+<i class="fas fa-file-invoice"></i> Invoices
+<span class="badge" id="mobile-invoice-count">0</span>
+</a>
+<a href="#" class="nav-item" data-tab="customers">
+<i class="fas fa-users"></i> Customers
+</a>
+<a href="#" class="nav-item" data-tab="inventory">
+<i class="fas fa-boxes"></i> Inventory
+</a>
+<a href="#" class="nav-item" data-tab="reports">
+<i class="fas fa-chart-bar"></i> Reports
+</a>
+<a href="#" class="nav-item" data-tab="settings">
+<i class="fas fa-cog"></i> Settings
+</a>
+</nav>
+
+<div class="sidebar-footer">
+<div class="user-info">
+<div class="avatar">
+JS
+</div>
+<div>
+<p class="username">
+Jewelry Shop
+</p>
+<p class="role">
+Admin
+</p>
+</div>
+</div>
+</div>
+</aside>
+
+<!-- Main Content -->
+<main class="main-content">
+<!-- Header -->
+<header class="main-header">
+<div class="header-left">
+<button class="mobile-sidebar-toggle mobile-only" id="open-mobile-sidebar">
+<i class="fas fa-bars"></i>
+</button>
+<div>
+<h1 id="page-title">Dashboard</h1>
+<p id="page-subtitle">
+Welcome to GoldCalc Pro
+</p>
+</div>
+</div>
+<div class="header-actions">
+<button class="btn btn-primary" id="new-invoice">
+<i class="fas fa-plus"></i> <span class="desktop-only">New Invoice</span>
+</button>
+<button class="btn btn-secondary" id="quick-calc">
+<i class="fas fa-bolt"></i> <span class="desktop-only">Quick Calc</span>
+</button>
+<div class="notifications">
+<i class="fas fa-bell"></i>
+<span class="notification-badge">3</span>
+</div>
+</div>
+</header>
+
+<!-- Tab Content -->
+<div class="tab-content">
+<!-- Dashboard Tab -->
+<div class="tab-pane active" id="dashboard">
+<div class="dashboard-grid">
+<!-- Stats Cards -->
+<div class="stat-card">
+<div class="stat-icon" style="background: #e3f2fd;">
+<i class="fas fa-receipt" style="color: #1976d2;"></i>
+</div>
+<div class="stat-info">
+<h3 id="total-invoices">0</h3>
+<p>
+Total Invoices
+</p>
+</div>
+<div class="stat-trend">
+<i class="fas fa-arrow-up"></i> 12%
+</div>
+</div>
+
+<div class="stat-card">
+<div class="stat-icon" style="background: #f3e5f5;">
+<i class="fas fa-weight-hanging" style="color: #7b1fa2;"></i>
+</div>
+<div class="stat-info">
+<h3 id="total-gold">0 g</h3>
+<p>
+Gold Sold
+</p>
+</div>
+<div class="stat-trend">
+<i class="fas fa-arrow-up"></i> 8%
+</div>
+</div>
+
+<div class="stat-card">
+<div class="stat-icon" style="background: #e8f5e9;">
+<i class="fas fa-coins" style="color: #388e3c;"></i>
+</div>
+<div class="stat-info">
+<h3 id="total-revenue">PKR 0</h3>
+<p>
+Total Revenue
+</p>
+</div>
+<div class="stat-trend">
+<i class="fas fa-arrow-up"></i> 15%
+</div>
+</div>
+
+<div class="stat-card">
+<div class="stat-icon" style="background: #fff3e0;">
+<i class="fas fa-user-friends" style="color: #f57c00;"></i>
+</div>
+<div class="stat-info">
+<h3 id="total-customers">0</h3>
+<p>
+Customers
+</p>
+</div>
+<div class="stat-trend">
+<i class="fas fa-arrow-up"></i> 5%
+</div>
+</div>
+
+<!-- Recent Activity -->
+<div class="card recent-activity">
+<div class="card-header">
+<h3>Recent Activity</h3>
+<a href="#" class="view-all">View All</a>
+</div>
+<div class="activity-list" id="recent-activity">
+<div class="activity-item">
+<i class="fas fa-file-invoice activity-icon"></i>
+<div class="activity-content">
+<p>
+New invoice #INV-001 created
+</p>
+<small>2 minutes ago</small>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Quick Actions -->
+<div class="card quick-actions">
+<div class="card-header">
+<h3>Quick Actions</h3>
+</div>
+<div class="actions-grid">
+<button class="action-btn" data-action="create-invoice">
+<i class="fas fa-file-invoice"></i>
+<span>Create Invoice</span>
+</button>
+<button class="action-btn" data-action="add-customer">
+<i class="fas fa-user-plus"></i>
+<span>Add Customer</span>
+</button>
+<button class="action-btn" data-action="check-rates">
+<i class="fas fa-chart-line"></i>
+<span>Check Gold Rates</span>
+</button>
+<button class="action-btn" data-action="print-receipt">
+<i class="fas fa-print"></i>
+<span>Print Receipt</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Calculator Tab -->
+<div class="tab-pane" id="calculator">
+<div class="calculator-container">
+<div class="calculator-grid">
+<!-- Left Panel - Customer & Shop Info -->
+<div class="card">
+<div class="card-header">
+<h3><i class="fas fa-store"></i> Shop & Customer Information</h3>
+</div>
+<div class="form-group">
+<label for="shop-name">Shop Name</label>
+<input type="text" id="shop-name" class="form-control" placeholder="Enter shop name">
+</div>
+<div class="form-group">
+<label for="shop-address">Address</label>
+<input type="text" id="shop-address" class="form-control" placeholder="Enter address">
+</div>
+<div class="form-row">
+<div class="form-group">
+<label for="shop-phone">Phone</label>
+<input type="tel" id="shop-phone" class="form-control" placeholder="+92 XXX XXXXXXX">
+</div>
+<div class="form-group">
+<label for="shop-tax">Tax/NTN</label>
+<input type="text" id="shop-tax" class="form-control" placeholder="NTN-XXXXXX">
+</div>
+</div>
+<div class="form-group">
+<label for="customer-name">Customer Name</label>
+<div class="input-with-btn">
+<input type="text" id="customer-name" class="form-control" placeholder="Select or enter customer name">
+<button class="btn-icon" id="select-customer">
+<i class="fas fa-users"></i>
+</button>
+</div>
+</div>
+<div class="form-group">
+<label for="customer-notes">Notes</label>
+<textarea id="customer-notes" class="form-control" rows="3" placeholder="Stone details, finish, special instructions..."></textarea>
+</div>
+<div class="form-row">
+<div class="form-group">
+<label for="invoice-no">Invoice #</label>
+<input type="text" id="invoice-no" class="form-control" readonly>
+</div>
+<div class="form-group">
+<label for="invoice-date">Date</label>
+<input type="datetime-local" id="invoice-date" class="form-control">
+</div>
+</div>
+</div>
+
+<!-- Middle Panel - Weight & Calculations -->
+<div class="card">
+<div class="card-header">
+<h3><i class="fas fa-weight-hanging"></i> Weight & Calculations</h3>
+</div>
+<div class="weight-grid">
+<div class="weight-input">
+<label for="masa">Masa</label>
+<div class="input-with-unit">
+<input type="number" id="masa" class="form-control" step="0.001" min="0">
+<span class="unit">m</span>
+</div>
+</div>
+<div class="weight-input">
+<label for="ratti">Ratti</label>
+<div class="input-with-unit">
+<input type="number" id="ratti" class="form-control" step="0.001" min="0">
+<span class="unit">r</span>
+</div>
+</div>
+<div class="weight-input">
+<label for="tola">Tola</label>
+<div class="input-with-unit">
+<input type="number" id="tola" class="form-control" step="0.0001" min="0">
+<span class="unit">t</span>
+</div>
+</div>
+</div>
+
+<div class="form-row">
+<div class="form-group">
+<label for="karat">Karat</label>
+<select id="karat" class="form-control">
+<option value="24">24K (Pure Gold)</option>
+<option value="22">22K (91.7%)</option>
+<option value="21">21K (87.5%)</option>
+<option value="18">18K (75%)</option>
+</select>
+</div>
+<div class="form-group">
+<label for="gold-rate">Gold Rate</label>
+<div class="input-with-unit">
+<input type="number" id="gold-rate" class="form-control" step="0.01" min="0" placeholder="0.00">
+<select id="rate-unit" class="unit-select">
+<option value="gram">per gram</option>
+<option value="tola">per tola</option>
+</select>
+</div>
+</div>
+</div>
+
+<div class="form-group">
+<label for="making-charges">Making Charges</label>
+<div class="input-with-unit">
+<input type="number" id="making-charges" class="form-control" step="0.01" min="0" placeholder="0.00">
+<span class="unit">PKR</span>
+</div>
+</div>
+
+<div class="calculator-actions">
+<button class="btn btn-primary" id="calculate-btn">
+<i class="fas fa-calculator"></i> Calculate
+</button>
+<button class="btn btn-success" id="save-invoice">
+<i class="fas fa-save"></i> Save Invoice
+</button>
+<button class="btn btn-secondary" id="clear-form">
+<i class="fas fa-eraser"></i> Clear
+</button>
+</div>
+</div>
+
+<!-- Right Panel - Preview -->
+<div class="card">
+<div class="card-header">
+<h3><i class="fas fa-receipt"></i> Invoice Preview</h3>
+<div class="card-actions">
+<button class="btn-icon" id="print-preview">
+<i class="fas fa-print"></i>
+</button>
+<button class="btn-icon" id="download-pdf">
+<i class="fas fa-download"></i>
+</button>
+</div>
+</div>
+<div class="invoice-preview" id="invoice-preview">
+<div class="invoice-header">
+<div class="shop-info">
+<h2 id="preview-shop-name">Shop Name</h2>
+<p id="preview-shop-address">
+Address
+</p>
+<p id="preview-shop-phone">
+Phone
+</p>
+</div>
+<div class="invoice-meta">
+<h3>INVOICE</h3>
+<p>
+#<span id="preview-invoice-no">0001</span>
+</p>
+<p id="preview-date">
+Date
+</p>
+</div>
+</div>
+
+<div class="invoice-preview">
+  <div class="invoice-header">
+    <div class="shop-info">
+      <h2 id="preview-shop-name">GOLDEN JEWELLERS</h2>
+      <p><i class="fas fa-map-marker-alt"></i> Main Bazaar, City Center</p>
+      <p><i class="fas fa-phone"></i> +92 300 1234567</p>
+    </div>
+    <div class="invoice-meta">
+      <h3>INVOICE</h3>
+      <p><strong>No:</strong> <span id="preview-invoice-no">#INV-001</span></p>
+      <p><strong>Date:</strong> <span id="preview-date">24/10/2023</span></p>
+    </div>
+  </div>
+
+  <div class="invoice-body">
+    </div>
+</div>
+
+
+<!-- Invoices Tab --><div class="tab-pane" id="invoices">
+  <div class="card">
+    <div class="card-header">
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" id="invoice-search" placeholder="Search invoices...">
+      </div>
+      
+      <div class="card-actions">
+        <button class="btn btn-primary" id="export-invoices">
+          <i class="fas fa-file-export"></i> Export All
+        </button>
+        <button class="btn btn-success" id="import-invoices">
+          <i class="fas fa-file-import"></i> Import
+        </button>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Invoice #</th>
+            <th>Customer</th>
+            <th>Date</th>
+            <th>Weight</th>
+            <th>Total</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="invoices-table">
+          </tbody>
+      </table>
+    </div>
+
+    <div class="pagination">
+      <button class="btn-icon" id="prev-page">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <span>Page <span id="current-page">1</span> of <span id="total-pages">1</span></span>
+      <button class="btn-icon" id="next-page">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Customers Tab -->
+<div class="tab-pane" id="customers">
+<div class="card">
+<div class="card-header">
+<h3><i class="fas fa-users"></i> Customer Management</h3>
+<div class="header-actions">
+<div class="search-box">
+<i class="fas fa-search"></i>
+<input type="text" id="customer-search" placeholder="Search customers...">
+</div>
+<button class="btn btn-primary" id="add-new-customer">
+<i class="fas fa-user-plus"></i> Add Customer
+</button>
+</div>
+</div>
+<div class="table-container">
+<table class="data-table">
+<thead>
+<tr>
+<th>Name</th>
+<th>Phone</th>
+<th>Email</th>
+<th>Total Purchases</th>
+<th>Last Purchase</th>
+<th>Actions</th>
+</tr>
+</thead>
+<tbody id="customers-table">
+<!-- Customers will be loaded here -->
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<!-- Inventory Tab -->
+<div class="tab-pane" id="inventory">
+<div class="card">
+<div class="card-header">
+<h3><i class="fas fa-boxes"></i> Inventory Management</h3>
+<div class="header-actions">
+<button class="btn btn-primary" id="add-inventory-item">
+<i class="fas fa-plus"></i> Add Item
+</button>
+<button class="btn btn-secondary" id="import-inventory">
+<i class="fas fa-file-import"></i> Import
+</button>
+</div>
+</div>
+<div class="table-container">
+<table class="data-table">
+<thead>
+<tr>
+<th>Item Code</th>
+<th>Description</th>
+<th>Weight (g)</th>
+<th>Karat</th>
+<th>Stock</th>
+<th>Price</th>
+<th>Actions</th>
+</tr>
+</thead>
+<tbody id="inventory-table">
+<!-- Inventory items will be loaded here -->
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<!-- Reports Tab -->
+<div class="tab-pane" id="reports">
+<div class="reports-container">
+<div class="card">
+<div class="card-header">
+<h3><i class="fas fa-chart-bar"></i> Sales Reports</h3>
+<div class="date-range">
+<input type="date" id="report-start-date">
+<span>to</span>
+<input type="date" id="report-end-date">
+<button class="btn btn-primary" id="generate-report">
+Generate Report
+</button>
+</div>
+</div>
+
+<div class="reports-grid">
+<div class="chart-container">
+<canvas id="sales-chart"></canvas>
+</div>
+
+<div class="report-summary">
+<h4>Summary</h4>
+<div class="summary-item">
+<span>Total Sales</span>
+<strong id="report-total-sales">PKR 0.00</strong>
+</div>
+<div class="summary-item">
+<span>Gold Sold</span>
+<strong id="report-gold-sold">0 g</strong>
+</div>
+<div class="summary-item">
+<span>Total Invoices</span>
+<strong id="report-total-invoices">0</strong>
+</div>
+<div class="summary-item">
+<span>Avg. Invoice Value</span>
+<strong id="report-avg-invoice">PKR 0.00</strong>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Settings Tab -->
+<div class="tab-pane" id="settings">
+<div class="settings-grid">
+<div class="card">
+<div class="card-header">
+<h3><i class="fas fa-store"></i> Shop Settings</h3>
+</div>
+<div class="form-group">
+<label for="setting-shop-name">Shop Name</label>
+<input type="text" id="setting-shop-name" class="form-control">
+</div>
+<div class="form-group">
+<label for="setting-address">Address</label>
+<textarea id="setting-address" class="form-control" rows="2"></textarea>
+</div>
+<div class="form-row">
+<div class="form-group">
+<label for="setting-phone">Phone</label>
+<input type="tel" id="setting-phone" class="form-control">
+</div>
+<div class="form-group">
+<label for="setting-tax">Tax ID</label>
+<input type="text" id="setting-tax" class="form-control">
+</div>
+</div>
+<button class="btn btn-primary" id="save-settings">
+Save Settings
+</button>
+</div>
+
+<div class="card">
+<div class="card-header">
+<h3><i class="fas fa-calculator"></i> Calculator Settings</h3>
+</div>
+<div class="form-group">
+<label for="default-karat">Default Karat</label>
+<select id="default-karat" class="form-control">
+<option value="24">24K</option>
+<option value="22">22K</option>
+<option value="21">21K</option>
+<option value="18">18K</option>
+</select>
+</div>
+<div class="form-group">
+<label for="default-rate">Default Gold Rate</label>
+<input type="number" id="default-rate" class="form-control">
+</div>
+<div class="form-group">
+<label for="making-charge-rate">Making Charge Rate (%)</label>
+<input type="number" id="making-charge-rate" class="form-control" step="0.1">
+</div>
+<div class="form-group">
+<label class="checkbox">
+<input type="checkbox" id="auto-save-invoices">
+<span>Auto-save invoices</span>
+</label>
+</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<h3><i class="fas fa-database"></i> Data Management</h3>
+</div>
+<div class="form-group">
+<button class="btn btn-secondary" id="backup-data">
+<i class="fas fa-download"></i> Backup Data
+</button>
+</div>
+<div class="form-group">
+<label for="restore-data" class="btn btn-secondary">
+<i class="fas fa-upload"></i> Restore Data
+</label>
+<input type="file" id="restore-data" hidden accept=".json">
+</div>
+<div class="form-group">
+<button class="btn btn-danger" id="clear-data">
+<i class="fas fa-trash"></i> Clear All Data
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+
+<!-- Modal for Customer Selection -->
+<div class="modal" id="customer-modal">
+<div class="modal-content">
+<div class="modal-header">
+<h3>Select Customer</h3>
+<button class="close-modal">&times;</button>
+</div>
+<div class="modal-body">
+<div class="search-box">
+<i class="fas fa-search"></i>
+<input type="text" id="modal-customer-search" placeholder="Search customers...">
+</div>
+<div class="customer-list" id="customer-list">
+<!-- Customers will be loaded here -->
+</div>
+</div>
+</div>
+</div>
+
+<!-- YouTube-Style Bottom Tabs -->
+<nav class="bottom-tabs mobile-only" id="bottom-tabs">
+<a href="#" class="bottom-tab active" data-tab="dashboard">
+<i class="fas fa-home"></i>
+<span class="tab-label">Home</span>
+</a>
+<a href="#" class="bottom-tab" data-tab="calculator">
+<i class="fas fa-calculator"></i>
+<span class="tab-label">Calc</span>
+</a>
+<a href="#" class="bottom-tab" data-tab="invoices">
+<i class="fas fa-file-invoice"></i>
+<span class="tab-label">Invoices</span>
+<span class="bottom-tab-badge" id="bottom-invoice-count">0</span>
+</a>
+<a href="#" class="bottom-tab" data-tab="reports">
+<i class="fas fa-chart-bar"></i>
+<span class="tab-label">Reports</span>
+</a>
+<a href="#" class="bottom-tab" data-tab="settings">
+<i class="fas fa-cog"></i>
+<span class="tab-label">More</span>
+</a>
+</nav>
+
+<script src="app.js"></script>
+</body>
+</html>
+</body>
+</html>
