@@ -18,18 +18,14 @@
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js" defer></script>
 
 <style>
-/* your reset + body styles here (or keep in style.css) */
+/* Keep body colors from style.css theme */
 *, *::before, *::after {
 box-sizing: border-box;
 margin: 0;
 padding: 0;
 }
 body {
-font-family: system-ui, sans-serif;
-background: #fafbfc;
-color: #222;
 min-height: 100vh;
-line-height: 1.6;
 }
 </style>
 </head>
@@ -163,10 +159,10 @@ Welcome to GoldCalc Pro
 </div>
 </div>
 <div class="header-actions">
-<button class="btn btn-primary" id="new-invoice">
+<button type="button" class="btn btn-primary" id="new-invoice">
 <i class="fas fa-plus"></i> <span class="desktop-only">New Invoice</span>
 </button>
-<button class="btn btn-secondary" id="quick-calc">
+<button type="button" class="btn btn-secondary" id="quick-calc">
 <i class="fas fa-bolt"></i> <span class="desktop-only">Quick Calc</span>
 </button>
 <div class="notifications">
@@ -446,27 +442,36 @@ Date
 </p>
 </div>
 </div>
-
-<div class="invoice-preview">
-  <div class="invoice-header">
-    <div class="shop-info">
-      <h2 id="preview-shop-name">GOLDEN JEWELLERS</h2>
-      <p><i class="fas fa-map-marker-alt"></i> Main Bazaar, City Center</p>
-      <p><i class="fas fa-phone"></i> +92 300 1234567</p>
-    </div>
-    <div class="invoice-meta">
-      <h3>INVOICE</h3>
-      <p><strong>No:</strong> <span id="preview-invoice-no">#INV-001</span></p>
-      <p><strong>Date:</strong> <span id="preview-date">24/10/2023</span></p>
-    </div>
-  </div>
-
-  <div class="invoice-body">
-    </div>
+<div class="invoice-body">
+<div class="invoice-row">
+<span>Customer</span>
+<strong id="preview-customer-name">Walk-in Customer</strong>
+</div>
+<div class="invoice-row">
+<span>Weight</span>
+<strong id="preview-weight">0.000 g (0.0000 Tola)</strong>
+</div>
+<div class="invoice-row">
+<span>Gold Value</span>
+<strong id="preview-gold-value">PKR 0.00</strong>
+</div>
+<div class="invoice-row">
+<span>Making Charges</span>
+<strong id="preview-making-charges">PKR 0.00</strong>
+</div>
+<div class="invoice-row invoice-total-row">
+<span>Total</span>
+<strong id="preview-total">PKR 0.00</strong>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 
-
-<!-- Invoices Tab --><div class="tab-pane" id="invoices">
+<!-- Invoices Tab -->
+<div class="tab-pane" id="invoices">
   <div class="card">
     <div class="card-header">
       <div class="search-box">
@@ -713,7 +718,6 @@ Save Settings
 </div>
 </div>
 </div>
-</div>
 </main>
 </div>
 
@@ -762,7 +766,5 @@ Save Settings
 </nav>
 
 <script src="app.js"></script>
-</body>
-</html>
 </body>
 </html>

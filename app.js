@@ -73,6 +73,19 @@
       if ($('clear-form')) $('clear-form').addEventListener('click', () => this.clearForm());
       if ($('print-preview')) $('print-preview').addEventListener('click', () => this.printInvoice());
       if ($('download-pdf')) $('download-pdf').addEventListener('click', () => this.downloadPDF());
+      if ($('new-invoice')) {
+        $('new-invoice').addEventListener('click', (e) => {
+          e.preventDefault();
+          this.switchTab('calculator');
+        });
+      }
+      if ($('quick-calc')) {
+        $('quick-calc').addEventListener('click', (e) => {
+          e.preventDefault();
+          this.switchTab('calculator');
+        });
+      }
+      if ($('add-new-customer')) $('add-new-customer').addEventListener('click', () => this.addNewCustomer());
 
       // Weight Inputs Auto-calculate
       ['masa', 'ratti', 'tola'].forEach(id => {
@@ -173,35 +186,35 @@
       this.setupSwipeGestures();
     }
 
-    // setupSwipeGestures() {
-    //   let touchStartX = 0;
-    //   const tabContent = document.querySelector('.tab-content');
-    //   const bottomTabNames = ['dashboard', 'calculator', 'invoices', 'reports', 'settings'];
+    setupSwipeGestures() {
+      let touchStartX = 0;
+      const tabContent = document.querySelector('.tab-content');
+      const bottomTabNames = ['dashboard', 'calculator', 'invoices', 'reports', 'settings'];
 
-    //   if (tabContent && window.innerWidth <= 768) {
-    //     tabContent.addEventListener('touchstart', (e) => {
-    //       touchStartX = e.touches[0].clientX;
-    //     }, { passive: true });
+      if (!tabContent) return;
 
-    //     tabContent.addEventListener('touchend', (e) => {
-    //       const touchEndX = e.changedTouches[0].clientX;
-    //       const diff = touchStartX - touchEndX;
-    //       const swipeThreshold = 50;
+      tabContent.addEventListener('touchstart', (e) => {
+        touchStartX = e.touches[0].clientX;
+      }, { passive: true });
 
-    //       if (Math.abs(diff) > swipeThreshold) {
-    //         const currentIndex = bottomTabNames.indexOf(this.currentTab);
-            
-    //         if (diff > 0 && currentIndex < bottomTabNames.length - 1) {
-    //           // Swipe left - next tab
-    //           this.switchTab(bottomTabNames[currentIndex + 1]);
-    //         } else if (diff < 0 && currentIndex > 0) {
-    //           // Swipe right - previous tab
-    //           this.switchTab(bottomTabNames[currentIndex - 1]);
-    //         }
-    //       }
-    //     }, { passive: true });
-    //   }
-    // }
+      tabContent.addEventListener('touchend', (e) => {
+        if (window.innerWidth > 768) return;
+
+        const touchEndX = e.changedTouches[0].clientX;
+        const diff = touchStartX - touchEndX;
+        const swipeThreshold = 50;
+
+        if (Math.abs(diff) <= swipeThreshold) return;
+        const currentIndex = bottomTabNames.indexOf(this.currentTab);
+        if (currentIndex === -1) return;
+
+        if (diff > 0 && currentIndex < bottomTabNames.length - 1) {
+          this.switchTab(bottomTabNames[currentIndex + 1]);
+        } else if (diff < 0 && currentIndex > 0) {
+          this.switchTab(bottomTabNames[currentIndex - 1]);
+        }
+      }, { passive: true });
+    }
 
     switchTab(tabName) {
       this.currentTab = tabName;
@@ -576,7 +589,7 @@
     <td class="px-4 py-3">
         <div class="flex items-center gap-2">
             <button 
-                class="p-2 rounded-md bg-blue-50 text-blue-600 hover:bg-blue-100 transition"
+                class="view-btn p-2 rounded-md bg-blue-50 text-blue-600 hover:bg-blue-100 transition"
                 data-id="${invoice.id}" 
                 title="View"
             >
@@ -584,7 +597,7 @@
             </button>
 
             <button 
-                class="p-2 rounded-md bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition"
+                class="print-btn p-2 rounded-md bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition"
                 data-id="${invoice.id}" 
                 title="Print"
             >
@@ -592,7 +605,7 @@
             </button>
 
             <button 
-                class="p-2 rounded-md bg-red-50 text-red-600 hover:bg-red-100 transition"
+                class="delete-btn p-2 rounded-md bg-red-50 text-red-600 hover:bg-red-100 transition"
                 data-id="${invoice.id}" 
                 title="Delete"
             >

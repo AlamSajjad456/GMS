@@ -111,14 +111,7 @@ body {
 /* Background gradient effect */
 .container::before {
   content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 300px;
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, transparent 100%);
-  pointer-events: none;
-  z-index: 0;
+  display: none;
 }
 
 /* ===========================================
@@ -1045,6 +1038,44 @@ color: var(--text-primary);
 
 .invoice-body {
   margin-top: 24px;
+  display: grid;
+  gap: 12px;
+}
+
+.invoice-row {
+  display: grid;
+  grid-template-columns: minmax(120px, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.invoice-row span {
+  color: var(--text-secondary);
+  font-size: 13px;
+  letter-spacing: 0.2px;
+}
+
+.invoice-row strong {
+  color: var(--text-primary);
+  font-size: 15px;
+  font-weight: 700;
+  text-align: right;
+  word-break: break-word;
+}
+
+.invoice-total-row {
+  border-color: rgba(59, 130, 246, 0.35);
+  background: rgba(59, 130, 246, 0.12);
+}
+
+.invoice-total-row span,
+.invoice-total-row strong {
+  color: var(--primary-light);
+  font-weight: 800;
 }
 
 .customer-info {
@@ -1129,15 +1160,64 @@ color: var(--text-primary);
 
 
 @media (max-width: 768px) {
-  /* Make the invoice preview horizontally scrollable */
   .invoice-preview {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch; /* smooth scrolling on iOS */
+    padding: 16px;
+    border-width: 1px;
+    border-radius: var(--radius-md);
   }
 
-  /* Optional: give the table a minimum width to force scrolling */
-  .invoice-table {
-    min-width: 600px; /* adjust this value as needed */
+  .invoice-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 14px;
+  }
+
+  .shop-info h2 {
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+
+  .shop-info p {
+    font-size: 13px;
+    margin-bottom: 4px;
+  }
+
+  .invoice-meta {
+    text-align: left;
+  }
+
+  .invoice-meta h3 {
+    font-size: 19px;
+    margin-bottom: 6px;
+  }
+
+  .invoice-meta p {
+    font-size: 13px;
+  }
+
+  .invoice-body {
+    margin-top: 14px;
+    gap: 10px;
+  }
+
+  .invoice-row {
+    grid-template-columns: 1fr auto;
+    padding: 10px 12px;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .invoice-row {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .invoice-row strong {
+    text-align: left;
+    font-size: 14px;
   }
 }
 
