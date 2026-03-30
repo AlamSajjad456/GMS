@@ -30,6 +30,13 @@
         makingChargeRate: 10,
         autoSave: true
       };
+      this.market = {
+        rate: 150000,
+        unit: 'tola',
+        prevRate: null,
+        updatedAt: null,
+        source: ''
+      };
       this.currentTab = 'dashboard';
       this.init();
     }
@@ -105,6 +112,7 @@
 
       // Reports
       if ($('generate-report')) $('generate-report').addEventListener('click', () => this.generateReport());
+      if ($('update-market-rate')) $('update-market-rate').addEventListener('click', () => this.updateMarketRate());
 
       // Modal
       const closeModalBtn = document.querySelector('.close-modal');
@@ -189,7 +197,7 @@
     setupSwipeGestures() {
       let touchStartX = 0;
       const tabContent = document.querySelector('.tab-content');
-      const bottomTabNames = ['dashboard', 'calculator', 'invoices', 'reports', 'settings'];
+      const bottomTabNames = ['dashboard', 'calculator', 'invoices', 'reports', 'market', 'settings'];
 
       if (!tabContent) return;
 
@@ -230,6 +238,7 @@
         customers: 'Customers',
         inventory: 'Inventory',
         reports: 'Reports',
+        market: 'Gold Market',
         settings: 'Settings'
       };
 
@@ -251,6 +260,9 @@
           break;
         case 'customers':
           this.renderCustomers();
+          break;
+        case 'market':
+          this.renderMarket();
           break;
       }
     }
@@ -362,6 +374,7 @@
         customers: 'Customer database and history',
         inventory: 'Stock management',
         reports: 'Analytics and insights',
+        market: 'Track daily gold price movement',
         settings: 'Configure your shop settings'
       };
       return subtitles[tabName] || '';
@@ -1003,7 +1016,8 @@
         const data = {
           invoices: this.invoices,
           settings: this.settings,
-          customers: this.customers
+          customers: this.customers,
+          market: this.market
         };
         localStorage.setItem('goldcalc-pro-data', JSON.stringify(data));
       } catch (e) {
@@ -1019,6 +1033,7 @@
           this.invoices = data.invoices || [];
           this.settings = data.settings || this.settings;
           this.customers = data.customers || [];
+          this.market = data.market || this.market;
 
           if ($('setting-shop-name')) $('setting-shop-name').value = this.settings.shopName;
           if ($('setting-address')) $('setting-address').value = this.settings.address;
@@ -1035,11 +1050,92 @@
           if ($('shop-tax')) $('shop-tax').value = this.settings.taxId;
           if ($('karat')) $('karat').value = this.settings.defaultKarat;
           if ($('gold-rate')) $('gold-rate').value = this.settings.defaultRate;
+          if ($('market-rate-input')) $('market-rate-input').value = this.market.rate || '';
+          if ($('market-rate-unit')) $('market-rate-unit').value = this.market.unit || 'tola';
+          if ($('market-source')) $('market-source').value = this.market.source || '';
 
         } catch (e) {
           console.error('Error loading saved data:', e);
         }
       }
+    }
+
+    renderMarket() {
+      const rate = Number(this.market.rate) || 0;
+      const unit = this.market.unit || 'tola';
+      const prev = Number(this.market.prevRate);
+      const hasPrev = Number.isFinite(prev);
+      const TOLA_GRAM = 11.6638038;
+
+      const ratePerGram = unit === 'tola' ? rate / TOLA_GRAM : rate;
+      const ratePerTola = unit === 'gram' ? rate * TOLA_GRAM : rate;
+
+      if ($('market-rate')) $('market-rate').textContent =
+        `PKR ${rate.toLocaleString('en-PK', { minimumFractionDigits: 2 })}`;
+      if ($('market-unit')) $('market-unit').textContent = `per ${unit}`;
+      if ($('market-per-gram')) $('market-per-gram').textContent =
+        `PKR ${ratePerGram.toLocaleString('en-PK', { minimumFractionDigits: 2 })}`;
+      if ($('market-per-tola')) $('market-per-tola').textContent =
+        `PKR ${ratePerTola.toLocaleString('en-PK', { minimumFractionDigits: 2 })}`;
+      if ($('market-updated')) $('market-updated').textContent =
+        this.market.updatedAt ? new Date(this.market.updatedAt).toLocaleString() : 'Never';
+      if ($('market-source-display')) $('market-source-display').textContent =
+        this.market.source && this.market.source.trim() ? this.market.source.trim() : 'Not set';
+
+      const badge = $('market-trend');
+      const changeEl = $('market-change');
+      if (badge && changeEl) {
+        badge.classList.remove('up', 'down');
+        changeEl.classList.remove('positive', 'negative');
+        if (hasPrev && prev > 0) {
+          const change = rate - prev;
+          const pct = (change / prev) * 100;
+          const sign = change >= 0 ? '+' : '';
+          const valueEl = changeEl.querySelector('.change-value');
+          if (valueEl) valueEl.textContent = `${sign}${pct.toFixed(2)}%`;
+
+          if (change > 0) {
+            badge.textContent = 'Up';
+            badge.classList.add('up');
+            changeEl.classList.add('positive');
+          } else if (change < 0) {
+            badge.textContent = 'Down';
+            badge.classList.add('down');
+            changeEl.classList.add('negative');
+          } else {
+            badge.textContent = 'Stable';
+          }
+        } else {
+          badge.textContent = 'Stable';
+          const valueEl = changeEl.querySelector('.change-value');
+          if (valueEl) valueEl.textContent = '0%';
+        }
+      }
+    }
+
+    updateMarketRate() {
+      const rateInput = $('market-rate-input');
+      const unitInput = $('market-rate-unit');
+      const sourceInput = $('market-source');
+
+      const rate = rateInput ? parseFloat(rateInput.value) : 0;
+      const unit = unitInput ? unitInput.value : 'tola';
+      const source = sourceInput ? sourceInput.value : '';
+
+      if (!Number.isFinite(rate) || rate <= 0) {
+        this.showToast('Enter a valid market rate', 'error');
+        return;
+      }
+
+      this.market.prevRate = this.market.rate || null;
+      this.market.rate = rate;
+      this.market.unit = unit;
+      this.market.source = source;
+      this.market.updatedAt = new Date().toISOString();
+
+      this.saveData();
+      this.renderMarket();
+      this.showToast('Market indicator updated', 'success');
     }
 
     updateTotalWeight() {
@@ -1055,7 +1151,7 @@
           this.showCustomerModal();
           break;
         case 'check-rates':
-          this.showToast('Gold rates feature coming soon!', 'info');
+          this.switchTab('market');
           break;
         case 'print-receipt':
           this.printInvoice();

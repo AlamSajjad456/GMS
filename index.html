@@ -63,6 +63,9 @@ Jewelry Management System
 <a href="#" class="nav-item" data-tab="reports">
 <i class="fas fa-chart-bar"></i> Reports
 </a>
+<a href="#" class="nav-item" data-tab="market">
+<i class="fas fa-chart-line"></i> Gold Market
+</a>
 <a href="#" class="nav-item" data-tab="settings">
 <i class="fas fa-cog"></i> Settings
 </a>
@@ -120,6 +123,9 @@ Jewelry Management
 </a>
 <a href="#" class="nav-item" data-tab="reports">
 <i class="fas fa-chart-bar"></i> Reports
+</a>
+<a href="#" class="nav-item" data-tab="market">
+<i class="fas fa-chart-line"></i> Gold Market
 </a>
 <a href="#" class="nav-item" data-tab="settings">
 <i class="fas fa-cog"></i> Settings
@@ -633,6 +639,80 @@ Generate Report
 </div>
 </div>
 </div>
+
+<!-- Gold Market Tab -->
+<div class="tab-pane" id="market">
+<div class="market-grid">
+  <div class="card market-hero">
+    <div class="card-header">
+      <h3><i class="fas fa-chart-line"></i> Live Market Indicator</h3>
+      <span class="market-badge" id="market-trend">Stable</span>
+    </div>
+    <div class="market-rate">
+      <div>
+        <p class="market-label">Current Rate</p>
+        <h2 id="market-rate">PKR 0</h2>
+        <p class="market-sub" id="market-unit">per tola</p>
+      </div>
+      <div class="market-change" id="market-change">
+        <span class="change-value">0%</span>
+        <small class="change-text">since last update</small>
+      </div>
+    </div>
+    <div class="market-meta">
+      <div class="meta-item">
+        <span>Per Gram</span>
+        <strong id="market-per-gram">PKR 0.00</strong>
+      </div>
+      <div class="meta-item">
+        <span>Per Tola</span>
+        <strong id="market-per-tola">PKR 0.00</strong>
+      </div>
+      <div class="meta-item">
+        <span>Last Updated</span>
+        <strong id="market-updated">Never</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="card market-update">
+    <div class="card-header">
+      <h3><i class="fas fa-pen"></i> Update Market Rate</h3>
+    </div>
+    <div class="form-group">
+      <label for="market-rate-input">Market Rate</label>
+      <div class="input-with-unit">
+        <input type="number" id="market-rate-input" class="form-control" step="0.01" min="0" placeholder="0.00">
+        <select id="market-rate-unit" class="unit-select">
+          <option value="tola">per tola</option>
+          <option value="gram">per gram</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="market-source">Source</label>
+      <input type="text" id="market-source" class="form-control" placeholder="Sarafa Market / Local source">
+    </div>
+    <button class="btn btn-primary" id="update-market-rate">
+      <i class="fas fa-sync"></i> Update Indicator
+    </button>
+  </div>
+
+  <div class="card market-notes">
+    <div class="card-header">
+      <h3><i class="fas fa-info-circle"></i> Notes</h3>
+    </div>
+    <p class="market-note-text">
+      This indicator is stored locally for quick reference and invoicing.
+      You can update it daily or anytime the market changes.
+    </p>
+    <div class="market-source">
+      <span>Source</span>
+      <strong id="market-source-display">Not set</strong>
+    </div>
+  </div>
+</div>
+</div>
 </div>
 </div>
 
@@ -758,6 +838,10 @@ Save Settings
 <a href="#" class="bottom-tab" data-tab="reports">
 <i class="fas fa-chart-bar"></i>
 <span class="tab-label">Reports</span>
+</a>
+<a href="#" class="bottom-tab" data-tab="market">
+<i class="fas fa-chart-line"></i>
+<span class="tab-label">Market</span>
 </a>
 <a href="#" class="bottom-tab" data-tab="settings">
 <i class="fas fa-cog"></i>
